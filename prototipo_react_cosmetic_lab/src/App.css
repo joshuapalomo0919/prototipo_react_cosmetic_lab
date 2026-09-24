@@ -38,16 +38,23 @@ h1 em, h2 em { color: var(--blue-dark); font-weight: 500; }
 .image-note small { letter-spacing: .02em; }
 .brand-strip { display: flex; justify-content: space-around; gap: 20px; padding: 20px 5vw; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--muted); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; }
 
-.about-section { padding: 110px 8vw; background: var(--white); }
-.about-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 10vw; align-items: end; margin-top: 45px; }
+.about-section { display: flex; flex-direction: column; justify-content: center; min-height: calc(100svh - 82px); padding: 95px 8vw; background: var(--white); scroll-snap-align: start; }
+.about-grid { display: grid; grid-template-columns: 1.15fr .7fr 1fr; gap: clamp(30px, 5vw, 80px); align-items: end; margin-top: 45px; }
+.about-image { height: 300px; overflow: hidden; }
+.about-image img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center 20%; }
 .about-grid h2, .contact-section h2 { margin: 0; color: var(--ink); font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 4vw, 4.4rem); font-weight: 500; line-height: 1.08; letter-spacing: -.04em; }
 .about-grid p, .contact-section p { margin-bottom: 24px; color: var(--muted); line-height: 1.8; }
 .text-link { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--blue-dark); padding-bottom: 7px; font-size: .8rem; }
-.contact-section { display: grid; grid-template-columns: 1fr 1fr; gap: 10vw; padding: 90px 8vw; background: #c8eaf5; }
+.contact-section { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 10vw; min-height: calc(100svh - 82px); padding: 90px 8vw; background: #c8eaf5; scroll-snap-align: start; }
 .contact-section h2 { margin: 22px 0 20px; }
-.contact-details { align-self: end; display: flex; flex-direction: column; gap: 13px; padding-bottom: 4px; }
+.contact-details { display: flex; flex-direction: column; gap: 34px; padding: 28px 0 4px 4vw; border-left: 1px solid rgba(37,139,184,.35); }
+.contact-info { display: flex; flex-direction: column; gap: 13px; }
 .contact-details a { color: var(--ink); font-family: 'Playfair Display', serif; font-size: 1.55rem; text-decoration: none; }
 .contact-details span { margin-top: 10px; color: var(--muted); font-size: .78rem; }
+.social-links { display: flex; flex-wrap: wrap; gap: 18px; }
+.social-links a { display: inline-flex; align-items: center; gap: 7px; color: var(--ink); font-family: 'DM Sans', sans-serif; font-size: .72rem; }
+.social-icon { display: inline-grid; place-items: center; width: 27px; height: 27px; border: 1px solid rgba(37,139,184,.55); border-radius: 50%; color: var(--blue-dark); font-size: 1.1rem; line-height: 1; }
+.social-letter { font-family: Arial, sans-serif; font-size: 1rem; font-weight: 700; }
 
 .productos-container { display: flex; max-width: 1400px; margin: 0 auto; padding: 70px 5vw; gap: 55px; }
 .sidebar { width: 215px; flex: 0 0 215px; height: fit-content; }
@@ -146,7 +153,9 @@ h1 em, h2 em { color: var(--blue-dark); font-weight: 500; }
   .home-image { min-height: 400px; height: 58vh; }
   .brand-strip { flex-wrap: wrap; justify-content: flex-start; padding: 18px 8vw; }
   .about-grid, .contact-section { grid-template-columns: 1fr; gap: 35px; }
-  .about-section, .contact-section { padding: 75px 8vw; }
+  .about-section, .contact-section { min-height: 0; padding: 75px 8vw; }
+  .about-image { height: 360px; }
+  .contact-details { padding: 0; border-left: 0; }
   .productos-container { flex-direction: column; padding: 45px 6vw; gap: 30px; }
   .sidebar { width: 100%; }
   .category-list { flex-direction: row; flex-wrap: wrap; }
