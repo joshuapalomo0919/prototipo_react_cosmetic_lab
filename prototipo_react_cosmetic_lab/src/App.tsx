@@ -1,122 +1,94 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { CosmeticProvider, useCosmetic } from './context/cosmeticlab';
+import HomeCosmeticLab from './componentes/homecosmeticlab';
+import ProductosCosmeticLab from './componentes/productoscosmeticlab';
+import LoginCosmeticLab from './componentes/logincosmeticlab';
+import RegistroCosmeticLab from './componentes/registrocosmeticlab';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+const ScrollToTop = () => {
+  const { pathname, hash } = useLocation();
 
+  useEffect(() => {
+    window.history.scrollRestoration = 'manual';
+
+    if (hash) {
+      requestAnimationFrame(() => document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth' }));
+      return;
+    }
+
+    window.scrollTo(0, 0);
+    requestAnimationFrame(() => window.scrollTo(0, 0));
+  }, [pathname, hash]);
+
+  return null;
+};
+
+const NavBar = () => {
+  const { cart, language, toggleLanguage } = useCosmetic();
+  const [cartOpen, setCartOpen] = useState(false);
+  const total = cart.reduce((sum, product) => sum + product.price, 0);
+  const copy = language === 'es'
+    ? { home: 'Inicio', products: 'Productos', about: 'Nosotros', contact: 'Contacto', register: 'Registrarse', empty: 'Tu carrito esta vacio', total: 'Total', checkout: 'Finalizar compra', bag: 'Tu bolsa de belleza' }
+    : { home: 'Home', products: 'Products', about: 'About us', contact: 'Contact', register: 'Sign up', empty: 'Your cart is empty', total: 'Total', checkout: 'Checkout', bag: 'Your beauty bag' };
+  
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      <nav className="navbar">
+      <div className="logo">
+        <span className="drop-icon">✦</span> <strong>CosmeticLAB</strong>
+      </div>
+      <div className="nav-links">
+        <Link to="/">{copy.home}</Link>
+        <Link to="/productos">{copy.products}</Link>
+        <a href="/#nosotros">{copy.about}</a>
+        <a href="/#contacto">{copy.contact}</a>
+      </div>
+      <div className="nav-actions">
+        <button className="lang" onClick={toggleLanguage} aria-label="Cambiar idioma">◎ {language.toUpperCase()}</button>
+        <button className="cart-icon" onClick={() => setCartOpen(true)} aria-label="Abrir carrito"><span className="cart-symbol" aria-hidden="true">💄</span>{cart.length > 0 && <span className="cart-count">{cart.length}</span>}</button>
+        <Link to="/login" className="btn-admin">{language === 'es' ? 'Iniciar sesion' : 'Log in'}</Link>
+      </div>
+      </nav>
+      {cartOpen && <CartDrawer copy={copy} total={total} onClose={() => setCartOpen(false)} />}
     </>
-  )
+  );
+};
+
+const CartDrawer = ({ copy, total, onClose }: { copy: Record<string, string>; total: number; onClose: () => void }) => {
+  const { cart, removeFromCart, clearCart } = useCosmetic();
+  return (
+    <div className="cart-backdrop" onClick={onClose}>
+      <aside className="cart-drawer" onClick={(event) => event.stopPropagation()}>
+        <div className="cart-heading"><div><span className="eyebrow">CosmeticLAB</span><h2>{copy.bag}</h2></div><button className="close-button" onClick={onClose}>×</button></div>
+        {cart.length === 0 ? <p className="empty-cart">{copy.empty}</p> : <>
+          <div className="cart-items">{cart.map((product, index) => <div className="cart-item" key={`${product.id}-${index}`}><img src={product.image} alt={product.name} /><div><strong>{product.name}</strong><span>${product.price.toFixed(2)}</span></div><button onClick={() => removeFromCart(product.id)} aria-label="Eliminar producto">×</button></div>)}</div>
+          <div className="cart-total"><span>{copy.total}</span><strong>${total.toFixed(2)}</strong></div>
+          <button className="btn-primary checkout-button" onClick={clearCart}>{copy.checkout}</button>
+        </>}
+      </aside>
+    </div>
+  );
+};
+
+function App() {
+  return (
+    <CosmeticProvider>
+      <Router>
+        <ScrollToTop />
+        <div className="app-container">
+          <NavBar />
+          <Routes>
+            <Route path="/" element={<HomeCosmeticLab />} />
+            <Route path="/productos" element={<ProductosCosmeticLab />} />
+            <Route path="/login" element={<LoginCosmeticLab />} />
+            <Route path="/registro" element={<RegistroCosmeticLab />} />
+          </Routes>
+        </div>
+      </Router>
+    </CosmeticProvider>
+  );
 }
 
-export default App
+export default App;
